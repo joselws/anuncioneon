@@ -35,12 +35,11 @@ class SubCategory(models.Model):
 class Advertisement(models.Model):
     """ Each ad model webscrapped from the page site """
     main_category = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    subtitle = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, blank=True, null=True)
+    subtitle = models.CharField(max_length=200, blank=True, null=True)
     image_url = models.URLField(blank=True, null=True)
-    description = models.TextField()
-    date = models.CharField(max_length=20)
-    price = models.PositiveIntegerField()
+    description = models.TextField(blank=True, null=True)
+    price = models.PositiveIntegerField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.title}. Precio: {self.price}€'
