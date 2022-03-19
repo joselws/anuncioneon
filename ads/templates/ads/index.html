@@ -8,7 +8,7 @@
         <div class="categories-wrapper">
             {% for category in categories %}
             <h5 class="category-title">
-                <a href="#">{{ category.category }}</a>
+                <a href="{% url 'category' category.category %}">{{ category.category }}</a>
             </h5>
             <div class="subcategories-wrapper">
                 {% for subcategory in category.subcategories.all %}

@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from ads.models import *
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -94,3 +95,21 @@ def register(request):
     # Get request
     else:
         return render(request, "ads/register.html")
+
+
+def category(request, category_name):
+    """ Renders a page with all ads in a given category """
+    if request.user.is_authenticated:
+        category = get_object_or_404(MainCategory, category=category_name)
+        ads = Advertisement.objects.filter(main_category=category)
+        return render(request, "ads/category.html", {
+            'ads': ads
+        })
+
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+def form_filter(request):
+    """ pass """
+    pass
