@@ -25,7 +25,7 @@ class MainCategory(models.Model):
 
 class SubCategory(models.Model):
     """ Each sub category model that belongs to a main category """
-    main_category = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
+    main_category = models.ForeignKey(MainCategory, related_name="subcategories", on_delete=models.CASCADE)
     subcategory = models.CharField(max_length=50)
 
     def __str__(self):

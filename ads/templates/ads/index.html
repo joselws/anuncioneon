@@ -1,0 +1,22 @@
+{% extends "ads/layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+    <main class="home-wrapper">
+        <h1 class="main-header">Anuncio Neon</h1>
+        <div class="categories-wrapper">
+            {% for category in categories %}
+            <h5 class="category-title">
+                <a href="#">{{ category.category }}</a>
+            </h5>
+            <div class="subcategories-wrapper">
+                {% for subcategory in category.subcategories.all %}
+                <p>{{ subcategory.subcategory }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+{% endblock %}

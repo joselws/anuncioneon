@@ -1,0 +1,23 @@
+{% extends "ads/layout.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+    <div class="login-wrapper">
+        <h2 class="heading">Login</h2>
+    
+        {% if message %}
+            <p class="login-error-message">{{ message }}</p>
+        {% endif %}
+    
+        <form class="login-form-wrapper" action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <input autofocus class="login-username form-control" type="text" name="username" placeholder="Username">
+            <input class="login-password form-control" type="password" name="password" placeholder="Password">
+            <input class="login-btn btn btn-primary" type="submit" value="Login">
+        </form>
+
+        <p class="login-info">Don't have an account? <a class="link" href="{% url 'register' %}">Register here.</a></p>
+    </div>
+
+{% endblock %}
