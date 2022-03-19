@@ -111,10 +111,11 @@ class AdScrapper():
         """ Get at most the first 20 ads from the category page """
         soup = self.get_soup(url_name)
         ads = soup.find_all('li', class_='item')
-        if len(ads) > 20:
-            return ads[:20]
-        else:
-            return ads
+        return ads
+        # if len(ads) > 20:
+        #     return ads[:20]
+        # else:
+        #     return ads
 
     def get_ad_title(self, ad_soup):
         """ Returns the title of the Ad given its soup object """
