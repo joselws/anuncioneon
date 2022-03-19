@@ -100,7 +100,7 @@ def register(request):
 def category(request, category_name):
     """ Renders a page with all ads in a given category """
     if request.user.is_authenticated:
-        category = get_object_or_404(MainCategory, category=category_name)
+        category = get_object_or_404(MainCategory, url_name=category_name)
         ads = Advertisement.objects.filter(main_category=category)
         return render(request, "ads/category.html", {
             'ads': ads
@@ -110,6 +110,33 @@ def category(request, category_name):
         return HttpResponseRedirect(reverse('login'))
 
 
-def form_filter(request):
+def filtered(request):
     """ pass """
-    pass
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            title = request.POST['title']
+            description = request.POST['description']
+            category = request.POST['category']
+
+            if category == 'all':
+                ads = Advertisement.objects.filter(title__icontains=title, 
+                    description__icontains=description)
+            else:
+                category_object = MainCategory.objects.get(url_name=category)
+                ads = Advertisement.objects.filter(main_category=category_object,
+                    title__icontains=title, description__icontains=description)
+
+            return render(request, "ads/filtered.html", {
+                'ads': ads
+            })
+
+        # GET methods
+        else:
+            categories = MainCategory.objects.all()
+            return render(request, "ads/form.html", {
+                'categories': categories
+            })
+
+    else:
+        return HttpResponseRedirect(reverse('login'))
+

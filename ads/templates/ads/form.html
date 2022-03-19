@@ -1,0 +1,23 @@
+{% extends "ads/layout.html" %}
+
+{% block title %}Filter form{% endblock %}
+
+{% block body %}
+    <main class="home-wrapper">
+        <h2 class="main-header">Filter form</h2>
+        <form class="filter-form" action="{% url 'filtered' %}" method="POST">
+            {% csrf_token %}
+            <input class="title-input form-control" type="text" name="title" placeholder="Title" />
+            <input class="description-input form-control" type="text" name="description" placeholder="Description" />
+            <select class="category-select form-select" name="category" required>
+                <option class="category-option" value="all" selected>All</option>
+                {% for category in categories %}
+                <option class="category-option" value="{{ category.url_name }}">{{ category.url_name }}</option>
+                {% endfor %}
+            </select>
+            <input class="submit-btn btn btn-primary" type="submit" value="Submit" />
+        </form>
+    </main>
+
+{% endblock %}
+

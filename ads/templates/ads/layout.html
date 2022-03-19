@@ -16,6 +16,11 @@
     </head>
 
     <body>
+        <nav class="nav">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'filtered' %}">Filter</a>
+        </nav>
+
         {% block body %}
         {% endblock %}
 

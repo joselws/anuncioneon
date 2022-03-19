@@ -1,0 +1,23 @@
+{% extends "ads/layout.html" %}
+
+{% block title %}Filtered query{% endblock %}
+
+{% block body %}
+    <main class="home-wrapper">
+        <h2 class="main-header">Filtered query</h2>
+        <div class="ads-wrapper">
+            {% for ad in ads %}
+            <div class="ad">
+                <h4 class="ad-title">{{ ad.title }}</h4>
+                <h5 class="ad-subtitle">{{ ad.subtitle }}</h5>
+                {% if ad.image_url %}
+                <img class="ad-image" src="{{ ad.image_url }}" alt="{{ ad.title }}" />
+                {% endif %}
+                <p class="ad-description">{{ ad.description }}</p>
+                <p class="ad-price"><strong>{{ ad.price }}</strong></p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+{% endblock %}
