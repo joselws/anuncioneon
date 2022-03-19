@@ -17,12 +17,17 @@
 
     <body>
         <nav class="nav">
-            <a href="{% url 'index' %}">Home</a>
-            <a href="{% url 'filtered' %}">Filter</a>
+            <a class="nav-link" href="{% url 'index' %}">Home</a>
+            <a class="nav-link" href="{% url 'filtered' %}">Filter</a>
+            {% if user.is_authenticated %}
+            <a class="nav-link" href="{% url 'logout' %}">Log out</a>
+            {% endif %}
         </nav>
 
-        {% block body %}
-        {% endblock %}
+        <main class="content">
+            {% block body %}
+            {% endblock %}
+        </main>
 
         <footer class="footer-wrapper bg-dark">
             <div class="footer-info-wrapper">

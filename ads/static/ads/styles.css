@@ -1,4 +1,87 @@
+a {
+    color: aquamarine;
+}
 
+.nav {
+    padding: 20px;
+    background-color: gray;
+}
+
+.nav-link {
+    margin: 0px 10px;
+    color: aquamarine;
+}
+
+.content {
+    max-width: 90vw;
+    margin: 0 auto;
+}
+
+.main-header {
+    margin: 50px 0px;
+    text-align: center;
+}
+
+.categories-wrapper, .category-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.categories-wrapper {
+    flex-wrap: wrap;
+}
+
+.category-card {
+    flex-direction: column;
+    background-color: azure;
+    width: 260px;
+    margin: 20px;
+}
+
+.subcategories-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.subcategory {
+    margin: 5px;
+}
+
+form {
+    margin: 30px auto;
+}
+
+form input {
+    margin: 20px auto;
+}
+
+h2 {
+    text-align: center;
+    margin: 40px 0px;
+}
+
+.ads-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.ad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 260px;
+    margin: 10px;
+    background-color: azure;
+}
+
+img {
+    max-width: 90%;
+    height: auto;
+}
 
 /****** FOOTER ******/
 

@@ -3,20 +3,22 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-    <main class="home-wrapper">
+    <div class="home-wrapper">
         <h1 class="main-header">Anuncio Neon</h1>
         <div class="categories-wrapper">
             {% for category in categories %}
-            <h5 class="category-title">
-                <a href="{% url 'category' category.url_name %}">{{ category.category }}</a>
-            </h5>
-            <div class="subcategories-wrapper">
-                {% for subcategory in category.subcategories.all %}
-                <p>{{ subcategory.subcategory }}</p>
-                {% endfor %}
+            <div class="category-card">
+                <h5 class="category-title">
+                    <a href="{% url 'category' category.url_name %}">{{ category.category }}</a>
+                </h5>
+                <div class="subcategories-wrapper">
+                    {% for subcategory in category.subcategories.all %}
+                    <p class="subcategory">{{ subcategory.subcategory }}</p>
+                    {% endfor %}
+                </div>
             </div>
             {% endfor %}
         </div>
-    </main>
+    </div>
 
 {% endblock %}
