@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from ads.models import MainCategory, SubCategory, Advertisement
+import concurrent.futures
 import re
 import time
 
@@ -14,7 +15,6 @@ class HomeScrapper():
 
     def __init__(self):
         self.url = 'http://www.anuncioneon.es/'
-        self.categories = self.get_categories_data()
 
     def get_page_content(self):
         """ Sends a GET request to the site homepage and returns the page content """
@@ -27,8 +27,7 @@ class HomeScrapper():
     def get_soup(self):
         """ Return the soup object from page content """
         content = self.get_page_content()
-        soup = BeautifulSoup(content, 'html.parser')
-        return soup
+        return BeautifulSoup(content, 'html.parser')
 
     def get_category_divs(self):
         """ Returns the div blocks that contains all main categories and subcategories """
@@ -41,13 +40,18 @@ class HomeScrapper():
         each key is a main category with a list of 
         their respective subcategories as values
         """
-        categories = []
-        for category_div in self.get_category_divs():
-            main_category = self.get_main_category(category_div)
-            subcategories = self.get_sub_categories(category_div)
-            url_name = self.get_url_name(category_div)
-            categories.append((main_category, subcategories, url_name))
-        return categories
+        start = time.perf_counter()
+        categories = [self.get_category_data(category_div) for category_div in self.get_category_divs()]
+        finish = time.perf_counter()
+        print(f'{round((finish - start), 2)} seconds')
+        self.categories = categories
+
+    def get_category_data(self, category_div):
+        """ Returns a tuple with all the category information of a given block """
+        main_category = self.get_main_category(category_div)
+        subcategories = self.get_sub_categories(category_div)
+        url_name = self.get_url_name(category_div)
+        return (main_category, subcategories, url_name)
 
     def get_main_category(self, category_div):
         """ Returns the main category from a given category block """
@@ -55,11 +59,8 @@ class HomeScrapper():
 
     def get_sub_categories(self, category_div):
         """ Returns a list of all subcategories given a category block """
-        subcategories = []
         subcategories_soup = category_div.find_all('a', style="font-size:8pt;text-decoration:none;")
-        for subcategory in subcategories_soup:
-            subcategories.append(subcategory.text)
-        return subcategories
+        return [subcategory.text for subcategory in subcategories_soup]
 
     def get_url_name(self, category_div):
         """ Get the url name of the given category """
@@ -84,16 +85,12 @@ class AdScrapper():
     def __init__(self):
         self.url_names = self.get_url_names()
         self.base_url = 'http://www.anuncioneon.es/anunciosgratis/'
-        self.ads = self.get_all_ads()
 
     def get_url_names(self):
         """ 
         Initializes url_names class attribute by getting every url_name from MainCategory model 
         """
-        url_names = []
-        for category in MainCategory.objects.all():
-            url_names.append(category.url_name)
-        return url_names
+        return [category.url_name for category in MainCategory.objects.all()]
 
     def get_page_content(self, url_name):
         """ Returns the html page content of the category """
@@ -104,18 +101,13 @@ class AdScrapper():
     def get_soup(self, url_name):
         """ Returns soup object of the category page """
         content = self.get_page_content(url_name)
-        soup = BeautifulSoup(content, 'lxml')
-        return soup
+        return BeautifulSoup(content, 'lxml')
 
     def get_category_ads(self, url_name):
-        """ Get at most the first 20 ads from the category page """
+        """ Get all ads from the specified category_page """
         soup = self.get_soup(url_name)
         ads = soup.find_all('li', class_='item')
-        return ads
-        # if len(ads) > 20:
-        #     return ads[:20]
-        # else:
-        #     return ads
+        return (ads, url_name)
 
     def get_ad_title(self, ad_soup):
         """ Returns the title of the Ad given its soup object """
@@ -168,7 +160,7 @@ class AdScrapper():
             image_url = ''
         return image_url
 
-    def get_ad_dictionary(self, ad_soup):
+    def get_ad_dictionary(self, ad_soup, url_name):
         """ Constructs an add dictionary to populate the Advertisement model """
         current_ad = dict()
         current_ad['title'] = self.get_ad_title(ad_soup)
@@ -176,20 +168,29 @@ class AdScrapper():
         current_ad['description'] = self.get_ad_description(ad_soup)
         current_ad['image_url'] = self.get_ad_image(ad_soup)
         current_ad['price'] = self.get_ad_price(ad_soup)
+        current_ad['main_category'] = MainCategory.objects.get(url_name=url_name)
         return current_ad
+
+    def scrape_data(self):
+        """ Scrape all ads from all category pages """
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            results = executor.map(self.get_category_ads, self.url_names)
+            return [result for result in results]
 
     def get_all_ads(self):
         """ Populate the self.ads method with ALL categories ads """
         all_ads = []
         start = time.perf_counter()
-        for url_name in self.url_names:
-            for ad in self.get_category_ads(url_name):
-                current_ad = self.get_ad_dictionary(ad)
-                current_ad['main_category'] = MainCategory.objects.get(url_name=url_name)
+        ads_list = self.scrape_data()
+
+        for ad_category, url_name in ads_list:
+            for ad in ad_category:
+                current_ad = self.get_ad_dictionary(ad, url_name)
                 all_ads.append(current_ad)
+
         finish = time.perf_counter()
         print(f'Time {round((finish - start), 2)}')
-        return all_ads
+        self.ads = all_ads
 
     def store_ads(self):
         """ Store the ads data into the database """
