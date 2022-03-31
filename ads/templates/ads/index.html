@@ -9,7 +9,7 @@
             {% for category in categories %}
             <div class="category-card">
                 <h5 class="category-title">
-                    <a href="{% url 'category' category.url_name %}">{{ category.category }}</a>
+                    <a class="category-title-link" href="{% url 'category' category.url_name %}">{{ category.category }}</a>
                 </h5>
                 <div class="subcategories-wrapper">
                     {% for subcategory in category.subcategories.all %}

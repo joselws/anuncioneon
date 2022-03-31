@@ -1,15 +1,10 @@
-a {
-    color: aquamarine;
-}
-
 .nav {
     padding: 20px;
-    background-color: gray;
 }
 
 .nav-link {
     margin: 0px 10px;
-    color: aquamarine;
+    color: #37c1f8;
 }
 
 .content {
@@ -34,9 +29,10 @@ a {
 
 .category-card {
     flex-direction: column;
-    background-color: azure;
+    background-color: #ecee8e;
     width: 260px;
     margin: 20px;
+    padding: 15px;
 }
 
 .subcategories-wrapper {
@@ -75,7 +71,7 @@ h2 {
     justify-content: center;
     max-width: 260px;
     margin: 10px;
-    background-color: azure;
+    background-color: #ecee8e;
 }
 
 img {

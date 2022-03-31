@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from ads.models import *
